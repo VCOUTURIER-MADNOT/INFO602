@@ -1,0 +1,194 @@
+   0  $accept : programme $end
+
+   1  $$1 :
+
+   2  programme : expression '.' $$1 programme
+   3            |
+
+   4  expression : ENTIER
+   5             | '-' expression
+   6             | expression '+' expression
+   7             | expression '-' expression
+   8             | expression '*' expression
+   9             | expression '/' expression
+
+state 0
+	$accept : . programme $end  (0)
+	programme : .  (3)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	$end  reduce 3
+
+	programme  goto 3
+	expression  goto 4
+
+
+state 1
+	expression : ENTIER .  (4)
+
+	.  reduce 4
+
+
+state 2
+	expression : '-' . expression  (5)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	.  error
+
+	expression  goto 5
+
+
+state 3
+	$accept : programme . $end  (0)
+
+	$end  accept
+
+
+state 4
+	programme : expression . '.' $$1 programme  (2)
+	expression : expression . '+' expression  (6)
+	expression : expression . '-' expression  (7)
+	expression : expression . '*' expression  (8)
+	expression : expression . '/' expression  (9)
+
+	'+'  shift 6
+	'-'  shift 7
+	'*'  shift 8
+	'/'  shift 9
+	'.'  shift 10
+	.  error
+
+
+state 5
+	expression : '-' expression .  (5)
+	expression : expression . '+' expression  (6)
+	expression : expression . '-' expression  (7)
+	expression : expression . '*' expression  (8)
+	expression : expression . '/' expression  (9)
+
+	'*'  shift 8
+	'/'  shift 9
+	'+'  reduce 5
+	'-'  reduce 5
+	'.'  reduce 5
+
+
+state 6
+	expression : expression '+' . expression  (6)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	.  error
+
+	expression  goto 11
+
+
+state 7
+	expression : expression '-' . expression  (7)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	.  error
+
+	expression  goto 12
+
+
+state 8
+	expression : expression '*' . expression  (8)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	.  error
+
+	expression  goto 13
+
+
+state 9
+	expression : expression '/' . expression  (9)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	.  error
+
+	expression  goto 14
+
+
+state 10
+	programme : expression '.' . $$1 programme  (2)
+	$$1 : .  (1)
+
+	.  reduce 1
+
+	$$1  goto 15
+
+
+state 11
+	expression : expression . '+' expression  (6)
+	expression : expression '+' expression .  (6)
+	expression : expression . '-' expression  (7)
+	expression : expression . '*' expression  (8)
+	expression : expression . '/' expression  (9)
+
+	'*'  shift 8
+	'/'  shift 9
+	'+'  reduce 6
+	'-'  reduce 6
+	'.'  reduce 6
+
+
+state 12
+	expression : expression . '+' expression  (6)
+	expression : expression . '-' expression  (7)
+	expression : expression '-' expression .  (7)
+	expression : expression . '*' expression  (8)
+	expression : expression . '/' expression  (9)
+
+	'*'  shift 8
+	'/'  shift 9
+	'+'  reduce 7
+	'-'  reduce 7
+	'.'  reduce 7
+
+
+state 13
+	expression : expression . '+' expression  (6)
+	expression : expression . '-' expression  (7)
+	expression : expression . '*' expression  (8)
+	expression : expression '*' expression .  (8)
+	expression : expression . '/' expression  (9)
+
+	.  reduce 8
+
+
+state 14
+	expression : expression . '+' expression  (6)
+	expression : expression . '-' expression  (7)
+	expression : expression . '*' expression  (8)
+	expression : expression . '/' expression  (9)
+	expression : expression '/' expression .  (9)
+
+	.  reduce 9
+
+
+state 15
+	programme : expression '.' $$1 . programme  (2)
+	programme : .  (3)
+
+	ENTIER  shift 1
+	'-'  shift 2
+	$end  reduce 3
+
+	programme  goto 16
+	expression  goto 4
+
+
+state 16
+	programme : expression '.' $$1 programme .  (2)
+
+	.  reduce 2
+
+
+8 terminals, 4 nonterminals
+10 grammar rules, 17 states
